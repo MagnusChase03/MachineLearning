@@ -86,6 +86,6 @@ Distributed under the GNU License. See `LICENSE.txt` for more information.
 
 [forks-shield]: https://img.shields.io/github/forks/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
 [stars-shield]: https://img.shields.io/github/stars/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
-[license-shield]: https://img.shields.io/github/license/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/magnuschase03/MachineLearningAlgarithms?style=for-the-badge
 [python-shield]: https://img.shields.io/badge/Python-20232A?style=for-the-badge&logo=python
 [tensorflow-shield]: https://img.shields.io/badge/Tensorflow-20232A?style=for-the-badge&logo=tensorflow
