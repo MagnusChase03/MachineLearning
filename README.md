@@ -1,5 +1,6 @@
 <a name="readme-top"></a>
 
+![issues-shield]
 ![forks-shield]
 ![stars-shield]
 ![license-shield]
@@ -94,6 +95,7 @@ Distributed under the GPL License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+[issues-shield]: https://img.shields.io/github/issues/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
 [forks-shield]: https://img.shields.io/github/forks/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
 [stars-shield]: https://img.shields.io/github/stars/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
 [license-shield]: https://img.shields.io/github/license/magnuschase03/MachineLearningAlgarithms?style=for-the-badge
