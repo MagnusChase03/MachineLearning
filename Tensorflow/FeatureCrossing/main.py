@@ -14,8 +14,7 @@ tf.keras.backend.set_floatx('float32')
 # Load data
 utdGradesData = pd.read_csv("Spring2022.csv")
 
-# Replace NaN with 0
-for 
+# todo: Replace NaN with 0
 
 featureCols = []
 
