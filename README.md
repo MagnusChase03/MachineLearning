@@ -77,10 +77,20 @@ Just use python to run any `main.py` file
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Roadmap
+
+* Train stock market nerual network
+* Create stock market project using tensorflow
+* Figure out feature crossing
+
+See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- LICENSE -->
 ## License
 
-Distributed under the GNU License. See `LICENSE.txt` for more information.
+Distributed under the GPL License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
