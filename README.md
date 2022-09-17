@@ -63,7 +63,7 @@ pip3 install python-dotenv tensorflow pandas numpy matplotlib
 ### Installation
 
 1. First either clone/pull/download the repo to your own machine
-2. Get a free API Key for StockMarket prohect at [https://www.alphavantage.co](https://www.alphavantage.co)
+2. Get a free API Key for StockMarket project at [https://www.alphavantage.co](https://www.alphavantage.co)
 3. Put the key into .env file in StockMarket directory
    ```
    API_KEY=your_api_key
