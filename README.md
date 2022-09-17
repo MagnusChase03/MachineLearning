@@ -1,5 +1,9 @@
 <a name="readme-top"></a>
 
+![forks-shield]
+![stars-shield]
+![license-shield]
+
 <h3 align="center">Machine Learning</h3>
 
   <p align="center">
@@ -35,14 +39,14 @@
 
 ## About The Project
 
-This repo is a perosnal collection of machine learning projects for my own intrest and learning. As I continue on my journey of learning more about machine learning, this repo will continue to grow. Currently this repo will cointain projects using Tensorflow or my own written code.
+This repo is a perosnal collection of machine learning projects for my own intrest and learning. As I continue on my journey of learning more about machine learning, this repo will continue to grow. Currently this repo contains some projects using Tensorflow while others are written with my own code.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
-* Python
-* Tensorflow
+* ![python-shield]
+* ![tensorflow-shield]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -79,3 +83,9 @@ Just use python to run any `main.py` file
 Distributed under the GNU License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+[forks-shield]: https://img.shields.io/github/forks/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/MagnusChase03/MachineLearningAlgarithms?style=for-the-badge
+[python-shield]: https://img.shields.io/badge/Python-20232A?style=for-the-badge&logo=python
+[tensorflow-shield]: https://img.shields.io/badge/Tensorflow-20232A?style=for-the-badge&logo=tensorflow
