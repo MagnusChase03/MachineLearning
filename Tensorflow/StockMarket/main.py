@@ -1,13 +1,16 @@
 from StockMarketNerualNetwork import StockMarketNerualNetwork
 import json
 
+# Grab all days worth of data and normalize it
 def readData(data, date):
 
     inputs = []
 
     keys = ['1. open', '2. high', '3. low', '4. close', '5. volume']
     for key in keys:
-        inputs.append(float(data['Time Series (Daily)'][date][key]))
+        
+        # Normalize by / 10
+        inputs.append(float(data['Time Series (Daily)'][date][key]) / 100)
 
     return inputs
 
