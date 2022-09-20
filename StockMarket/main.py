@@ -8,7 +8,7 @@ def readData(data, date):
 
     keys = ['1. open', '2. high', '3. low', '4. close', '5. volume']
     for key in keys:
-        
+
         # Normalize by / 10
         inputs.append(float(data['Time Series (Daily)'][date][key]) / 100)
 
@@ -29,6 +29,12 @@ def main():
         inputs.append(element)
 
     nerualNetwork = StockMarketNerualNetwork()
+    prediction = nerualNetwork.predict(inputs)
+
+    print("Predicted %f" % prediction)
+    for i in range(0, 1000):
+        nerualNetwork.train([inputs], [12.75300])
+
     prediction = nerualNetwork.predict(inputs)
 
     print("Predicted %f" % prediction)
