@@ -85,7 +85,7 @@ Just use python to run any `main.py` file
 * Create stock market project using tensorflow
 * Figure out feature crossing
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/MagnusChase03/MachineLearningAlgarithms/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
