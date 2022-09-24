@@ -81,7 +81,6 @@ Just use python to run any `main.py` file
 
 ## Roadmap
 
-* Create a K-means clustering model
 * Figure out feature crossing
 
 See the [open issues](https://github.com/MagnusChase03/MachineLearningAlgarithms/issues) for a full list of proposed features (and known issues).
