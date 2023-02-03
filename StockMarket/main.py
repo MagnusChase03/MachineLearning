@@ -10,5 +10,7 @@ def main():
     bot = NeuralNetwork(5, 6, 5)
     bot.forward(np.random.rand(5))
     print(bot.hiddenLayer[0])
+    print(bot.hiddenLayer[1])
+    print(bot.outputs)
 
 main()

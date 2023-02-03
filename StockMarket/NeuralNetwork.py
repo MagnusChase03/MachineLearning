@@ -42,6 +42,20 @@ class NeuralNetwork:
             self.hiddenLayer[0][node] = sigmoid(total + self.bias[0][node])
 
         # Pass to second hidden layer
+        for node in range(0, len(self.hiddenLayer[1])):
+            total = 0.0
+            for iNode in range(0, len(self.hiddenLayer[0])):
+                total += self.hiddenLayer[0][iNode] * self.weights[1][iNode][node]
+
+            self.hiddenLayer[1][node] = sigmoid(total + self.bias[1][node])
+
+        # Pass to output layer
+        for node in range(0, len(self.outputs)):
+            total = 0.0
+            for iNode in range(0, len(self.hiddenLayer[1])):
+                total += self.hiddenLayer[1][iNode] * self.weights[2][iNode][node]
+
+            self.outputs[node] = sigmoid(total + self.bias[2][node])
 
         return 0
         
