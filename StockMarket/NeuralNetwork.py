@@ -1,6 +1,9 @@
 import numpy as np
 import random
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x)) 
+
 class NeuralNetwork:
     def __init__(self, inputNum, hiddenLayerNum, outputNum):
         
@@ -15,4 +18,30 @@ class NeuralNetwork:
         self.weights.append(np.random.rand(hiddenLayerNum, hiddenLayerNum))
         self.weights.append(np.random.rand(hiddenLayerNum, hiddenLayerNum))
         self.weights.append(np.random.rand(hiddenLayerNum, outputNum))
+
+        # Random Bias
+        self.bias = []
+        self.bias.append(np.random.rand(hiddenLayerNum))
+        self.bias.append(np.random.rand(hiddenLayerNum))
+        self.bias.append(np.random.rand(outputNum))
+
+    def forward(self, inputs):
+
+        # Make sure input size is correct
+        if not len(inputs) == len(self.inputs):
+            return 1
+
+        self.inputs = inputs
+
+        # Pass to first hidden layer
+        for node in range(0, len(self.hiddenLayer[0])):
+            total = 0.0
+            for iNode in range(0, len(self.inputs)):
+                total += self.inputs[iNode] * self.weights[0][iNode][node]
+
+            self.hiddenLayer[0][node] = sigmoid(total + self.bias[0][node])
+
+        # Pass to second hidden layer
+
+        return 0
         
