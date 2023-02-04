@@ -8,9 +8,19 @@ def main():
     load_dotenv()
 
     bot = NeuralNetwork(5, 6, 5)
-    bot.forward(np.random.rand(5))
-    print(bot.hiddenLayer[0])
-    print(bot.hiddenLayer[1])
-    print(bot.outputs)
+
+    inputs = np.random.rand(5)
+    correct = np.random.rand(5)
+    bot.forward(inputs)
+
+    print("Correct %s" % correct)
+    print("Guess %s" % bot.outputs)
+
+    bot.backpropagate(correct)
+    bot.forward(inputs)
+
+    print("")
+    print("Correct %s" % correct)
+    print("Guess %s" % bot.outputs)
 
 main()

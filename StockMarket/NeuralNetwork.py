@@ -55,7 +55,29 @@ class NeuralNetwork:
             for iNode in range(0, len(self.hiddenLayer[1])):
                 total += self.hiddenLayer[1][iNode] * self.weights[2][iNode][node]
 
-            self.outputs[node] = sigmoid(total + self.bias[2][node])
+            self.outputs[node] = total + self.bias[2][node]
+
+        return 0
+
+    def backpropagate(self, outputs):
+
+        # Check for correct size
+        if not len(outputs) == len(self.outputs):
+            return 1
+
+        # Get errors in predicted values
+        errors = np.zeros(len(self.outputs))
+        for num in range(0, len(outputs)):
+            errors[num] = outputs[num] - self.outputs[num]
+
+        # Update last set of weights
+        for node in range(0, len(self.hiddenLayer[1])):
+            for oNode in range(0, len(self.outputs)):
+                self.weights[2][node][oNode] += 2 * self.hiddenLayer[1][node] * (outputs[oNode] - self.outputs[oNode]) * 0.01 
+
+        # Update last set of bias
+        for num in range(0, len(self.bias[2])):
+            self.bias[2][num] += 2 * (outputs[num] - self.outputs[num]) * 0.01
 
         return 0
         
