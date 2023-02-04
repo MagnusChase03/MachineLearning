@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import random
 
@@ -23,6 +24,11 @@ class NeuralNetwork:
         self.bias.append(np.random.rand(hiddenLayerNum))
         self.bias.append(np.random.rand(hiddenLayerNum))
         self.bias.append(np.random.rand(outputNum))
+
+        # Matplotlib graph
+        plt.ion()
+        self.fig, self.ax = plt.subplots()
+        self.iteration = 0
 
     def forward(self, inputs):
 
@@ -67,7 +73,15 @@ class NeuralNetwork:
         # Get errors in predicted values
         errors = np.zeros(len(self.outputs))
         for num in range(0, len(outputs)):
-            errors[num] = outputs[num] - self.outputs[num]
+            errors[num] = np.power(outputs[num] - self.outputs[num], 2)
+        
+        if self.iteration % 10 == 0:
+            for node in range(0, len(self.outputs)):
+                self.ax.plot([self.iteration], [errors[node]], 'go')
+            self.fig.canvas.draw()
+            self.fig.canvas.flush_events()
+
+        self.iteration += 1
 
         # Array to hold weight changes
         changes = []
@@ -101,5 +115,27 @@ class NeuralNetwork:
                 for weight in range(0, len(self.weights[layer][node])):
                     self.weights[layer][node][weight] += changes[layer][node][weight]
         
+        return 0
+
+    def train(self, inputs, outputs,  rounds):
+
+        # Make sure datasets are correct size
+        if not len(inputs) == len(outputs) or len(inputs) == 0:
+            return 1
+
+        self.interation = 0
+
+        # Train model
+        for i in range(0, rounds):
+            for dataset in range(0, len(inputs)):
+                if self.forward(inputs[dataset]) == 1:
+                    return 1
+
+                if self.backpropagate(outputs[dataset]) == 1:
+                    return 1
+
+        plt.ioff()
+        plt.show()
+
         return 0
         

@@ -1,4 +1,5 @@
 import os
+import time
 import numpy as np
 from dotenv import load_dotenv
 
@@ -16,9 +17,7 @@ def main():
     print("Correct %s" % correct)
     print("Guess %s" % bot.outputs)
 
-    for i in range(0,1000):
-        bot.backpropagate(correct)
-        bot.forward(inputs)
+    bot.train([inputs], [correct], 100)
 
     print("")
     print("Correct %s" % correct)
