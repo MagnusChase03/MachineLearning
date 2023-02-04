@@ -16,8 +16,9 @@ def main():
     print("Correct %s" % correct)
     print("Guess %s" % bot.outputs)
 
-    bot.backpropagate(correct)
-    bot.forward(inputs)
+    for i in range(0,1000):
+        bot.backpropagate(correct)
+        bot.forward(inputs)
 
     print("")
     print("Correct %s" % correct)

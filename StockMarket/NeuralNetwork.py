@@ -90,6 +90,11 @@ class NeuralNetwork:
                 for oNode in range(0, len(self.hiddenLayer[1])):
                     changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.hiddenLayer[0][node] * 0.01 
 
+        # Update middle bias
+        for outNode in range(0, len(self.outputs)):
+            for oNode in range(0, len(self.hiddenLayer[1])):
+                self.bias[1] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * 0.01 
+
         # Update weights with changes
         for layer in range(0, len(self.weights)):
             for node in range(0, len(self.weights[layer])):
