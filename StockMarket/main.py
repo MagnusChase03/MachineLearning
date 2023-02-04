@@ -1,5 +1,4 @@
 import os
-import time
 import numpy as np
 from dotenv import load_dotenv
 
@@ -8,19 +7,13 @@ from NeuralNetwork import NeuralNetwork
 def main():
     load_dotenv()
 
-    bot = NeuralNetwork(5, 6, 5)
+    bot = NeuralNetwork(3, 2, 1)
 
-    inputs = np.random.rand(5)
-    correct = np.random.rand(5)
-    bot.forward(inputs)
-
-    print("Correct %s" % correct)
-    print("Guess %s" % bot.outputs)
-
-    bot.train([inputs], [correct], 200)
+    bot.train([[1, 1, 0], [0, 1, 1], [0, 0, 1], [1, 0, 0], [1, 1, 1]], [[1], [1], [0], [0], [1]], 2000)
 
     print("")
-    print("Correct %s" % correct)
+
+    bot.forward([1, 0, 1])
     print("Guess %s" % bot.outputs)
 
 main()

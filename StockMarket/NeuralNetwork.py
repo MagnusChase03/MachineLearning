@@ -7,7 +7,9 @@ def sigmoid(x):
 
 class NeuralNetwork:
     def __init__(self, inputNum, hiddenLayerNum, outputNum):
-        
+    
+        self.learningRate = 0.01        
+
         # Create default layers
         self.inputs = np.zeros(inputNum)
         self.hiddenLayer = np.zeros((2, hiddenLayerNum))
@@ -76,13 +78,11 @@ class NeuralNetwork:
             errors[num] = np.power(outputs[num] - self.outputs[num], 2)
         
         # Add error points to graph
-        if self.iteration % 50 == 0:
+        if self.iteration % 100 == 0:
             for node in range(0, len(self.outputs)):
                 self.ax.plot([self.iteration], [errors[node]], 'go')
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()
-
-        self.iteration += 1
 
         # Array to hold weight changes
         changes = []
@@ -93,30 +93,28 @@ class NeuralNetwork:
         # Update last set of weights
         for node in range(0, len(self.hiddenLayer[1])):
             for oNode in range(0, len(self.outputs)):
-                changes[2][node][oNode] += 2 * self.hiddenLayer[1][node] * (outputs[oNode] - self.outputs[oNode]) * 0.01 
+                changes[2][node][oNode] += 2 * self.hiddenLayer[1][node] * (outputs[oNode] - self.outputs[oNode]) * self.learningRate 
 
         # Update last set of bias
         for num in range(0, len(self.bias[2])):
-            self.bias[2][num] += 2 * (outputs[num] - self.outputs[num]) * 0.01
+            self.bias[2][num] += 2 * (outputs[num] - self.outputs[num]) * self.learningRate
 
         # Update middle set of weights
         for outNode in range(0, len(self.outputs)):
             for node in range(0, len(self.hiddenLayer[0])):
                 for oNode in range(0, len(self.hiddenLayer[1])):
-                    changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.hiddenLayer[0][node] * 0.01 
+                    changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.hiddenLayer[0][node] * self.learningRate
 
         # Update middle bias
         for outNode in range(0, len(self.outputs)):
             for oNode in range(0, len(self.hiddenLayer[1])):
-                self.bias[1] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * 0.01 
+                self.bias[1] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.learningRate
 
         # Update first bias
         for outNode in range(0, len(self.outputs)):
             for oNode in range(0, len(self.hiddenLayer[1])):
                 for node in range(0, len(self.hiddenLayer[0])):
-                    self.bias[0] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.weights[1][node][oNode] * 0.01
-
-        print(self.bias[0])
+                    self.bias[0] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.weights[1][node][oNode] * self.learningRate
 
         # Update weights with changes
         for layer in range(0, len(self.weights)):
@@ -142,6 +140,7 @@ class NeuralNetwork:
 
                 if self.backpropagate(outputs[dataset]) == 1:
                     return 1
+            self.iteration += 1
 
         plt.ioff()
         plt.show()
