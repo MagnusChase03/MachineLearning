@@ -16,7 +16,6 @@ class NeuralNetwork:
         self.weights = []
         self.weights.append(np.random.rand(inputNum, hiddenLayerNum))
         self.weights.append(np.random.rand(hiddenLayerNum, hiddenLayerNum))
-        self.weights.append(np.random.rand(hiddenLayerNum, hiddenLayerNum))
         self.weights.append(np.random.rand(hiddenLayerNum, outputNum))
 
         # Random Bias
@@ -70,14 +69,32 @@ class NeuralNetwork:
         for num in range(0, len(outputs)):
             errors[num] = outputs[num] - self.outputs[num]
 
+        # Array to hold weight changes
+        changes = []
+        changes.append(np.zeros((len(self.inputs), len(self.hiddenLayer[0]))))
+        changes.append(np.zeros((len(self.hiddenLayer[0]), len(self.hiddenLayer[0]))))
+        changes.append(np.zeros((len(self.hiddenLayer[0]), len(self.outputs))))
+
         # Update last set of weights
         for node in range(0, len(self.hiddenLayer[1])):
             for oNode in range(0, len(self.outputs)):
-                self.weights[2][node][oNode] += 2 * self.hiddenLayer[1][node] * (outputs[oNode] - self.outputs[oNode]) * 0.01 
+                changes[2][node][oNode] += 2 * self.hiddenLayer[1][node] * (outputs[oNode] - self.outputs[oNode]) * 0.01 
 
         # Update last set of bias
         for num in range(0, len(self.bias[2])):
             self.bias[2][num] += 2 * (outputs[num] - self.outputs[num]) * 0.01
 
+        # Update middle set of weights
+        for outNode in range(0, len(self.outputs)):
+            for node in range(0, len(self.hiddenLayer[0])):
+                for oNode in range(0, len(self.hiddenLayer[1])):
+                    changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.hiddenLayer[0][node] * 0.01 
+
+        # Update weights with changes
+        for layer in range(0, len(self.weights)):
+            for node in range(0, len(self.weights[layer])):
+                for weight in range(0, len(self.weights[layer][node])):
+                    self.weights[layer][node][weight] += changes[layer][node][weight]
+        
         return 0
         
