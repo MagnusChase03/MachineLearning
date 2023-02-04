@@ -75,7 +75,8 @@ class NeuralNetwork:
         for num in range(0, len(outputs)):
             errors[num] = np.power(outputs[num] - self.outputs[num], 2)
         
-        if self.iteration % 10 == 0:
+        # Add error points to graph
+        if self.iteration % 50 == 0:
             for node in range(0, len(self.outputs)):
                 self.ax.plot([self.iteration], [errors[node]], 'go')
             self.fig.canvas.draw()
@@ -108,6 +109,14 @@ class NeuralNetwork:
         for outNode in range(0, len(self.outputs)):
             for oNode in range(0, len(self.hiddenLayer[1])):
                 self.bias[1] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * 0.01 
+
+        # Update first bias
+        for outNode in range(0, len(self.outputs)):
+            for oNode in range(0, len(self.hiddenLayer[1])):
+                for node in range(0, len(self.hiddenLayer[0])):
+                    self.bias[0] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.weights[1][node][oNode] * 0.01
+
+        print(self.bias[0])
 
         # Update weights with changes
         for layer in range(0, len(self.weights)):

@@ -17,7 +17,7 @@ def main():
     print("Correct %s" % correct)
     print("Guess %s" % bot.outputs)
 
-    bot.train([inputs], [correct], 100)
+    bot.train([inputs], [correct], 200)
 
     print("")
     print("Correct %s" % correct)
