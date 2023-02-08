@@ -5,6 +5,9 @@ import random
 def sigmoid(x):
     return 1 / (1 + np.exp(-x)) 
 
+def sigmoid_dir(x):
+    return sigmoid(x) * (1 - sigmoid(x))
+
 class NeuralNetwork:
     def __init__(self, inputNum, hiddenLayerNum, outputNum, lr):
     
@@ -13,6 +16,7 @@ class NeuralNetwork:
         # Create default layers
         self.inputs = np.zeros(inputNum)
         self.hiddenLayer = np.zeros((2, hiddenLayerNum))
+        self.hiddenLayerBefore = np.zeros((2, hiddenLayerNum))
         self.outputs = np.zeros(outputNum)
 
         # Random Weights
@@ -46,6 +50,7 @@ class NeuralNetwork:
             for iNode in range(0, len(self.inputs)):
                 total += self.inputs[iNode] * self.weights[0][iNode][node]
 
+            self.hiddenLayerBefore[0][node] = total + self.bias[0][node]
             self.hiddenLayer[0][node] = sigmoid(total + self.bias[0][node])
 
         # Pass to second hidden layer
@@ -54,6 +59,7 @@ class NeuralNetwork:
             for iNode in range(0, len(self.hiddenLayer[0])):
                 total += self.hiddenLayer[0][iNode] * self.weights[1][iNode][node]
 
+            self.hiddenLayerBefore[1][node] = total + self.bias[1][node]
             self.hiddenLayer[1][node] = sigmoid(total + self.bias[1][node])
 
         # Pass to output layer
@@ -108,13 +114,30 @@ class NeuralNetwork:
         for outNode in range(0, len(self.outputs)):
             for node in range(0, len(self.hiddenLayer[0])):
                 for oNode in range(0, len(self.hiddenLayer[1])):
-                    changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.hiddenLayer[0][node] * self.learningRate
+                    changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * sigmoid_dir(self.hiddenLayerBefore[1][oNode]) * self.hiddenLayer[0][node] * self.learningRate
 
         # Update middle bias
         for outNode in range(0, len(self.outputs)):
             for oNode in range(0, len(self.hiddenLayer[1])):
                 #self.bias[1] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.learningRate
                 changes[4][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.learningRate
+
+        # Update first weights
+        '''
+        dE/dW0 = dE/dP * dP/dH2 * dH2/dSum * dSum/H1 * dH1/dSum * dSum/dW0 
+        = -2(O-P) * W2 * sig^-1 SUM * W1 * sig^-1 SUM * I1
+        
+        E = (O-P)^2
+        P = SUM H2W2 + B2
+        H2 = sig SUM H1W1 + B1
+
+        '''
+        
+        for outNode in range(0, len(self.outputs)):
+            for node2 in range(0, len(self.hiddenLayer[1])):
+                for node1 in range(0, len(self.hiddenLayer[0])):
+                    for inputNode in range(0, len(self.inputs)):
+                        changes[0][inputNode][node1] += 2 * self.weights[2][node2][outNode] * (outputs[outNode] - self.outputs[outNode]) * sigmoid_dir(self.hiddenLayerBefore[1][node2]) * self.weights[1][node1][node2] * sigmoid_dir(self.hiddenLayerBefore[0][node1]) * self.inputs[inputNode] * self.learningRate
 
         # Update first bias
         for outNode in range(0, len(self.outputs)):

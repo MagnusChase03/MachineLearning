@@ -23,13 +23,19 @@ def main():
     
     #grab_data()
 
-    #bot = NeuralNetwork(3, 2, 1, 0.01)
+    bot = NeuralNetwork(3, 2, 1, 0.005)
 
-    #bot.train([[1, 1, 0], [0, 1, 1], [0, 0, 1], [1, 0, 0], [1, 1, 1]], [[1], [1], [0], [0], [1]], 2000, 5)
+    bot.train([[1, 1, 0], [0, 1, 1], [0, 0, 1], [1, 0, 0], [1, 1, 1]], [[1], [1], [0], [0], [1]], 2000, 3)
 
-    #print("")
+    print("")
 
-    #bot.forward([1, 0, 1])
-    #print("Guess %s" % bot.outputs)
+    bot.forward([1, 0, 1])
+    print("Guess %s" % bot.outputs)
+    bot.forward([1, 1, 0])
+    print("Guess %s" % bot.outputs)
+
+    print(bot.weights[0])
+    print(bot.weights[1])
+    print(bot.weights[2])
 
 main()
