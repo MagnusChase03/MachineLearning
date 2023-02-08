@@ -82,7 +82,7 @@ class NeuralNetwork:
         errors = np.zeros(len(self.outputs))
         for num in range(0, len(outputs)):
             errors[num] = np.power(outputs[num] - self.outputs[num], 2)
-        
+    
         # Add error points to graph
         if self.iteration % 100 == 0 and not self.iteration == 0:
             for node in range(0, len(self.outputs)):

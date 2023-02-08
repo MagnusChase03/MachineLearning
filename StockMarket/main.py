@@ -16,26 +16,32 @@ def grab_data():
     f.close()
 
 def load_data():
-    pass    
+    f = open("data/tmp.dat", "r")
+    data = f.read()
+    f.close()
+
+    data = json.loads(data)
+
+    return data["Time Series (5min)"]
+    
 
 def main():
     load_dotenv()
     
     #grab_data()
+    data = load_data()
 
-    bot = NeuralNetwork(3, 2, 1, 0.005)
+    bot = NeuralNetwork(5, 6, 5, 0.00001)
 
-    bot.train([[1, 1, 0], [0, 1, 1], [0, 0, 1], [1, 0, 0], [1, 1, 1]], [[1], [1], [0], [0], [1]], 2000, 3)
+    dataSets = []
+    for key in data.keys():
+        index = 0
+        dataSet = np.zeros(5)
+        for label in data[key].keys():
+            dataSet[index] = data[key][label]
+        
+        dataSets.append(dataSet)
 
-    print("")
-
-    bot.forward([1, 0, 1])
-    print("Guess %s" % bot.outputs)
-    bot.forward([1, 1, 0])
-    print("Guess %s" % bot.outputs)
-
-    print(bot.weights[0])
-    print(bot.weights[1])
-    print(bot.weights[2])
+    bot.train(dataSets[0:2], dataSets[1:3], 3000, 2)
 
 main()
