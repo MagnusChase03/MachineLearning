@@ -29,19 +29,12 @@ def main():
     load_dotenv()
     
     #grab_data()
-    data = load_data()
+    #data = load_data()
 
-    bot = NeuralNetwork(5, 6, 5, 0.00001)
+    bot = NeuralNetwork(3, 3, 2, 0.01)
 
-    dataSets = []
-    for key in data.keys():
-        index = 0
-        dataSet = np.zeros(5)
-        for label in data[key].keys():
-            dataSet[index] = data[key][label]
-        
-        dataSets.append(dataSet)
-
-    bot.train(dataSets[0:2], dataSets[1:3], 3000, 2)
+    for i in range(0, 100):
+        bot.forward(np.array([1, 0, 1]))
+        bot.backprop(np.array([1, 1]))
 
 main()

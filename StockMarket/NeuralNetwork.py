@@ -6,7 +6,7 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x)) 
 
 def sigmoid_dir(x):
-    return sigmoid(x) * (1 - sigmoid(x))
+    return x * (1 - x)
 
 class NeuralNetwork:
     def __init__(self, inputNum, hiddenLayerNum, outputNum, lr):
@@ -16,7 +16,6 @@ class NeuralNetwork:
         # Create default layers
         self.inputs = np.zeros(inputNum)
         self.hiddenLayer = np.zeros((2, hiddenLayerNum))
-        self.hiddenLayerBefore = np.zeros((2, hiddenLayerNum))
         self.outputs = np.zeros(outputNum)
 
         # Random Weights
@@ -27,14 +26,12 @@ class NeuralNetwork:
 
         # Random Bias
         self.bias = []
-        self.bias.append(np.random.rand(hiddenLayerNum))
-        self.bias.append(np.random.rand(hiddenLayerNum))
-        self.bias.append(np.random.rand(outputNum))
+        self.bias.append(np.zeros(hiddenLayerNum))
+        self.bias.append(np.zeros(hiddenLayerNum))
+        self.bias.append(np.zeros(outputNum))
 
         # Matplotlib graph
-        plt.ion()
         self.fig, self.ax = plt.subplots()
-        self.iteration = 0
 
     def forward(self, inputs):
 
@@ -45,156 +42,44 @@ class NeuralNetwork:
         self.inputs = inputs
 
         # Pass to first hidden layer
-        for node in range(0, len(self.hiddenLayer[0])):
-            total = 0.0
-            for iNode in range(0, len(self.inputs)):
-                total += self.inputs[iNode] * self.weights[0][iNode][node]
+        hiddenLayer0 = inputs.dot(self.weights[0])
+        hiddenLayer0 += self.bias[0]
+        hiddenLayer0 = sigmoid(hiddenLayer0)
 
-            self.hiddenLayerBefore[0][node] = total + self.bias[0][node]
-            self.hiddenLayer[0][node] = sigmoid(total + self.bias[0][node])
+        self.hiddenLayer[0] = hiddenLayer0
 
-        # Pass to second hidden layer
-        for node in range(0, len(self.hiddenLayer[1])):
-            total = 0.0
-            for iNode in range(0, len(self.hiddenLayer[0])):
-                total += self.hiddenLayer[0][iNode] * self.weights[1][iNode][node]
+        # Pass to second hiddenLayer
+        hiddenLayer1 = self.hiddenLayer[0].dot(self.weights[1]) 
+        hiddenLayer1 += self.bias[1]
+        hiddenLayer1 = sigmoid(hiddenLayer1)
 
-            self.hiddenLayerBefore[1][node] = total + self.bias[1][node]
-            self.hiddenLayer[1][node] = sigmoid(total + self.bias[1][node])
+        self.hiddenLayer[1] = hiddenLayer1
 
-        # Pass to output layer
-        for node in range(0, len(self.outputs)):
-            total = 0.0
-            for iNode in range(0, len(self.hiddenLayer[1])):
-                total += self.hiddenLayer[1][iNode] * self.weights[2][iNode][node]
+        # Outputs
+        outputs = self.hiddenLayer[1].dot(self.weights[2])
+        outputs += self.bias[2]
 
-            self.outputs[node] = total + self.bias[2][node]
+        self.outputs = outputs
 
         return 0
 
-    def backpropagate(self, outputs):
-
-        # Check for correct size
+    def backprop(self, outputs):
+        
+        # Make size check
         if not len(outputs) == len(self.outputs):
             return 1
 
-        # Get errors in predicted values
-        errors = np.zeros(len(self.outputs))
-        for num in range(0, len(outputs)):
-            errors[num] = np.power(outputs[num] - self.outputs[num], 2)
-    
-        # Add error points to graph
-        if self.iteration % 100 == 0 and not self.iteration == 0:
-            for node in range(0, len(self.outputs)):
-                self.ax.plot([self.iteration], [errors[node]], 'go')
-            self.fig.canvas.draw()
-            self.fig.canvas.flush_events()
+        # Get difference
+        errors = outputs - self.outputs
 
-        # Array to hold weight changes
+        # Update last layer and bias
         changes = []
-        changes.append(np.zeros((len(self.inputs), len(self.hiddenLayer[0]))))
-        changes.append(np.zeros((len(self.hiddenLayer[0]), len(self.hiddenLayer[0]))))
-        changes.append(np.zeros((len(self.hiddenLayer[0]), len(self.outputs))))
+        for error in range(0, len(errors)):
+            changes.append(errors[error] * self.hiddenLayer[1])
+            self.bias[2] += errors[error] * self.learningRate
 
-        changes.append(np.zeros(len(self.hiddenLayer[0])))
-        changes.append(np.zeros(len(self.hiddenLayer[0])))
-        changes.append(np.zeros(len(self.outputs)))
-
-        # Update last set of weights
-        for node in range(0, len(self.hiddenLayer[1])):
-            for oNode in range(0, len(self.outputs)):
-                changes[2][node][oNode] += 2 * self.hiddenLayer[1][node] * (outputs[oNode] - self.outputs[oNode]) * self.learningRate 
-
-        # Update last set of bias
-        for num in range(0, len(self.bias[2])):
-            #self.bias[2][num] += 2 * (outputs[num] - self.outputs[num]) * self.learningRate
-            changes[5][num] += 2 * (outputs[num] - self.outputs[num]) * self.learningRate
-
-        # Update middle set of weights
-        for outNode in range(0, len(self.outputs)):
-            for node in range(0, len(self.hiddenLayer[0])):
-                for oNode in range(0, len(self.hiddenLayer[1])):
-                    changes[1][node][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * sigmoid_dir(self.hiddenLayerBefore[1][oNode]) * self.hiddenLayer[0][node] * self.learningRate
-
-        # Update middle bias
-        for outNode in range(0, len(self.outputs)):
-            for oNode in range(0, len(self.hiddenLayer[1])):
-                #self.bias[1] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.learningRate
-                changes[4][oNode] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.learningRate
-
-        # Update first weights
-        '''
-        dE/dW0 = dE/dP * dP/dH2 * dH2/dSum * dSum/H1 * dH1/dSum * dSum/dW0 
-        = -2(O-P) * W2 * sig^-1 SUM * W1 * sig^-1 SUM * I1
-        
-        E = (O-P)^2
-        P = SUM H2W2 + B2
-        H2 = sig SUM H1W1 + B1
-
-        '''
-        
-        for outNode in range(0, len(self.outputs)):
-            for node2 in range(0, len(self.hiddenLayer[1])):
-                for node1 in range(0, len(self.hiddenLayer[0])):
-                    for inputNode in range(0, len(self.inputs)):
-                        changes[0][inputNode][node1] += 2 * self.weights[2][node2][outNode] * (outputs[outNode] - self.outputs[outNode]) * sigmoid_dir(self.hiddenLayerBefore[1][node2]) * self.weights[1][node1][node2] * sigmoid_dir(self.hiddenLayerBefore[0][node1]) * self.inputs[inputNode] * self.learningRate
-
-        # Update first bias
-        for outNode in range(0, len(self.outputs)):
-            for oNode in range(0, len(self.hiddenLayer[1])):
-                for node in range(0, len(self.hiddenLayer[0])):
-                    #self.bias[0] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.weights[1][node][oNode] * self.learningRate
-                    changes[3][node] += 2 * self.weights[2][oNode][outNode] * (outputs[outNode] - self.outputs[outNode]) * self.weights[1][node][oNode] * self.learningRate
-        
-        return changes
-
-    def update(self, changes):
-
-        # Update weights with changes
-        for change in range(0, len(changes)):
-            for layer in range(0, len(self.weights)):
-                for node in range(0, len(self.weights[layer])):
-                    for weight in range(0, len(self.weights[layer][node])):
-                        self.weights[layer][node][weight] += changes[change][layer][node][weight]
-            for node in range(0, len(changes[change][5])):
-                self.bias[2][node] += changes[change][5][node]
-
-            for node in range(0, len(changes[change][4])):
-                self.bias[1][node] += changes[change][4][node]
-
-            for node in range(0, len(changes[change][3])):
-                self.bias[0][node] += changes[change][3][node]
-
-    def train(self, inputs, outputs, rounds, batchSize):
-
-        # Make sure datasets are correct size
-        if not len(inputs) == len(outputs) or len(inputs) == 0:
-            return 1
-
-        self.interation = 0
-
-        # Train model
-        for i in range(0, rounds):
-            
-            batchChanges = []
-            for dataset in range(0, len(inputs)):
-                if self.forward(inputs[dataset]) == 1:
-                    return 1
-
-                result = self.backpropagate(outputs[dataset])
-                if result == 1:
-                    return 1
-                else:
-                    batchChanges.append(result)
-    
-                if len(batchChanges) == batchSize or dataset == len(inputs) - 1:
-                    self.update(batchChanges)
-                    batchChanges = []
-
-            self.iteration += 1
-
-        plt.ioff()
-        plt.show()
+        changes = np.array(changes)
+        changes = changes.T * self.learningRate
+        self.weights[2] += changes
 
         return 0
-        
