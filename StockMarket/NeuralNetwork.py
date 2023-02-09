@@ -71,15 +71,16 @@ class NeuralNetwork:
 
         # Get difference
         errors = outputs - self.outputs
+        errors.resize(1, len(errors))
 
         # Update last layer and bias
-        changes = []
-        for error in range(0, len(errors)):
-            changes.append(errors[error] * self.hiddenLayer[1])
-            self.bias[2] += errors[error] * self.learningRate
+        hiddenLayer1 = self.hiddenLayer[1]
+        hiddenLayer1.resize(1, len(hiddenLayer1))
 
-        changes = np.array(changes)
-        changes = changes.T * self.learningRate
+        changes = hiddenLayer1.T.dot(errors)
         self.weights[2] += changes
+
+        # Update middle layer and bias
+        # dE/dW1 = dE/dP dP/H1 dH1/dSum dSum/dW1
 
         return 0
