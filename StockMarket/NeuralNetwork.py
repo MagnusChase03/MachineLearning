@@ -98,4 +98,18 @@ class NeuralNetwork:
         for error in range(0, len(hiddenLayer1Errors)):
             self.bias[1] += hiddenLayer1Errors[error] * self.learningRate
 
+        # Hidden layer 0 erros
+        hiddenLayer0Errors = self.weights[1].dot(hiddenLayer1Errors.T)
+        hiddenLayer0Errors = hiddenLayer0Errors.T
+
+        # Update first layer and bais
+        inp = np.copy(self.inputs)
+        inp.resize(1, len(inp))
+
+        changes = inp.T.dot(hiddenLayer0Errors)
+        self.weights[0] += changes * self.learningRate
+
+        for error in range(0, len(hiddenLayer0Errors)):
+            self.bias[0] += hiddenLayer0Errors[error] * self.learningRate
+
         return 0
