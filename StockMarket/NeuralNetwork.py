@@ -72,7 +72,6 @@ class NeuralNetwork:
         # Get difference
         errors = outputs - self.outputs
         errors.resize(1, len(errors))
-        print(errors)
 
         # Update last layer and bias
         hiddenLayer1 = np.copy(self.hiddenLayer[1])

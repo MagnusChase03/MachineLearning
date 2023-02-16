@@ -24,7 +24,7 @@ def load_data():
 
     return data["Time Series (5min)"]
 
-def dataToArray(data):
+def entry_to_array(data):
 
     array = np.zeros(5)
     index = 0
@@ -34,18 +34,26 @@ def dataToArray(data):
 
     return array
 
+def load_dataset(data):
+    
+    dataset = []
+    for key in sorted(data.keys()):
+        dataset.append(entry_to_array(data[key]))
+
+    return np.array(dataset)
+
 def main():
     load_dotenv()
     
     #grab_data()
     data = load_data()
+    dataset = load_dataset(data)
 
     bot = NeuralNetwork(5, 6, 5, 0.01)
+    bot.train(dataset[:-1], dataset[1:], 100)
 
-    inputs = dataToArray(data["2023-02-06 07:15:00"])
-    outputs = dataToArray(data["2023-02-06 07:45:00"])
-    inputs2 = dataToArray(data["2023-02-06 07:45:00"])
-    outputs2 = dataToArray(data["2023-02-06 08:05:00"])
-    bot.train([inputs, inputs2], [outputs, outputs2], 1000)
+    bot.forward(dataset[0])
+    print(bot.outputs)
+    print(dataset[1])
 
 main()
