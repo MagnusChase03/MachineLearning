@@ -84,21 +84,18 @@ class NeuralNetwork:
         for error in range(0, len(errors)):
             self.bias[2] += errors[error] * self.learningRate
 
-        # Update middle layer and bias
-        # dE/dW1 = dE/dP dP/H1 dH1/dSum dSum/dW1
-        gradient = sigmoid_dir(self.hiddenLayer[1])
-        gradient.resize(1, len(gradient)) 
+        # Get Layer 1 Error
+        hiddenLayer1Errors = self.weights[2].dot(errors.T)
+        hiddenLayer1Errors = hiddenLayer1Errors.T 
 
+        # Update middle layer and bias
         hiddenLayer0 = self.hiddenLayer[0]
         hiddenLayer0.resize(1, len(hiddenLayer0))
 
-        hiddenLayer1Errors = self.weights[2] * errors * gradient.T
-        for error in range(0, len(hiddenLayer1Errors.T)):
-            hiddenLayer1Error = hiddenLayer1Errors.T[error]
-            hiddenLayer1Error = hiddenLayer1Error.reshape(1, len(hiddenLayer1Error))
+        changes = hiddenLayer0.T.dot(hiddenLayer1Errors)
+        self.weights[1] += changes * self.learningRate
 
-            changes = hiddenLayer0.T.dot(hiddenLayer1Error)
-            self.weights[1] += changes * self.learningRate
-            self.bias[1] += hiddenLayer1Errors.T[error] * self.learningRate
+        for error in range(0, len(hiddenLayer1Errors)):
+            self.bias[1] += hiddenLayer1Errors[error] * self.learningRate
 
         return 0
