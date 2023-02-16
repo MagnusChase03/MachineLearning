@@ -23,26 +23,29 @@ def load_data():
     data = json.loads(data)
 
     return data["Time Series (5min)"]
-    
+
+def dataToArray(data):
+
+    array = np.zeros(5)
+    index = 0
+    for key in data.keys():
+        array[index] = float(data[key])
+        index += 1
+
+    return array
 
 def main():
     load_dotenv()
     
     #grab_data()
-    #data = load_data()
+    data = load_data()
 
-    bot = NeuralNetwork(3, 2, 1, 0.01)
+    bot = NeuralNetwork(5, 6, 5, 0.01)
 
-    for i in range(0, 1000):
-        bot.forward(np.array([1, 0, 1]))
-        bot.backprop(np.array([1]))
-        bot.forward(np.array([1, 1, 0]))
-        bot.backprop(np.array([1]))
-        bot.forward(np.array([1, 0, 0]))
-        bot.backprop(np.array([0]))
-
-    
-    bot.forward(np.array([1, 0, 1]))
-    print(bot.outputs)
+    inputs = dataToArray(data["2023-02-06 07:15:00"])
+    outputs = dataToArray(data["2023-02-06 07:45:00"])
+    inputs2 = dataToArray(data["2023-02-06 07:45:00"])
+    outputs2 = dataToArray(data["2023-02-06 08:05:00"])
+    bot.train([inputs, inputs2], [outputs, outputs2], 1000)
 
 main()

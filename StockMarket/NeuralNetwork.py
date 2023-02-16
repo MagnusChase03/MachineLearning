@@ -72,6 +72,7 @@ class NeuralNetwork:
         # Get difference
         errors = outputs - self.outputs
         errors.resize(1, len(errors))
+        print(errors)
 
         # Update last layer and bias
         hiddenLayer1 = np.copy(self.hiddenLayer[1])
@@ -110,5 +111,17 @@ class NeuralNetwork:
 
         for error in range(0, len(hiddenLayer0Errors)):
             self.bias[0] += hiddenLayer0Errors[error] * self.learningRate
+
+        return 0
+
+    def train(self, inputs, outputs, epochs):
+        
+        if not len(inputs) == len(outputs):
+            return 1
+
+        for epoch in range(0, epochs):
+            for inp in range(0, len(inputs)):
+                self.forward(inputs[inp])
+                self.backprop(outputs[inp])
 
         return 0
