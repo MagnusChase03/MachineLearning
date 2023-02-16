@@ -72,10 +72,9 @@ class NeuralNetwork:
         # Get difference
         errors = outputs - self.outputs
         errors.resize(1, len(errors))
-        print(errors)
 
         # Update last layer and bias
-        hiddenLayer1 = self.hiddenLayer[1]
+        hiddenLayer1 = np.copy(self.hiddenLayer[1])
         hiddenLayer1.resize(1, len(hiddenLayer1))
 
         changes = hiddenLayer1.T.dot(errors)
@@ -89,7 +88,7 @@ class NeuralNetwork:
         hiddenLayer1Errors = hiddenLayer1Errors.T 
 
         # Update middle layer and bias
-        hiddenLayer0 = self.hiddenLayer[0]
+        hiddenLayer0 = np.copy(self.hiddenLayer[0])
         hiddenLayer0.resize(1, len(hiddenLayer0))
 
         changes = hiddenLayer0.T.dot(hiddenLayer1Errors)

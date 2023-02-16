@@ -31,10 +31,18 @@ def main():
     #grab_data()
     #data = load_data()
 
-    bot = NeuralNetwork(3, 3, 2, 0.01)
+    bot = NeuralNetwork(3, 2, 1, 0.01)
 
-    for i in range(0, 100):
+    for i in range(0, 1000):
         bot.forward(np.array([1, 0, 1]))
-        bot.backprop(np.array([1, 1]))
+        bot.backprop(np.array([1]))
+        bot.forward(np.array([1, 1, 0]))
+        bot.backprop(np.array([1]))
+        bot.forward(np.array([1, 0, 0]))
+        bot.backprop(np.array([0]))
+
+    
+    bot.forward(np.array([1, 0, 1]))
+    print(bot.outputs)
 
 main()
