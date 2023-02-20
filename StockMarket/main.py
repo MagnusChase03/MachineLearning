@@ -1,42 +1,59 @@
-from StockMarketNerualNetwork import StockMarketNerualNetwork
+import os
+import requests
 import json
+import numpy as np
+from dotenv import load_dotenv
 
-# Grab all days worth of data and normalize it
-def readData(data, date):
+from NeuralNetwork import NeuralNetwork
 
-    inputs = []
+def grab_data():
+    URL = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&apikey=" + os.environ["API_KEY"]
 
-    keys = ['1. open', '2. high', '3. low', '4. close', '5. volume']
-    for key in keys:
+    res = requests.get(URL)
 
-        # Normalize by / 10
-        inputs.append(float(data['Time Series (Daily)'][date][key]) / 100)
+    f = open("data/tmp.dat", "w")
+    f.write(json.dumps(res.json()))
+    f.close()
 
-    return inputs
+def load_data():
+    f = open("data/tmp.dat", "r")
+    data = f.read()
+    f.close()
+
+    data = json.loads(data)
+
+    return data["Time Series (5min)"]
+
+def entry_to_array(data):
+
+    array = np.zeros(5)
+    index = 0
+    for key in data.keys():
+        array[index] = float(data[key])
+        index += 1
+
+    return array
+
+def load_dataset(data):
+    
+    dataset = []
+    for key in sorted(data.keys()):
+        dataset.append(entry_to_array(data[key]))
+
+    return np.array(dataset)
 
 def main():
-
-    # Read data
-    IBMfile = open('./data/2022-09-17-IBM.json', 'r')
-    IBMdata = IBMfile.read()
-    data = json.loads(IBMdata)
-
-    # Get inputs for nerual network test
-    inputs = readData(data, '2022-09-15')
-    dayTwo = readData(data, '2022-09-14')
+    load_dotenv()
     
-    for element in dayTwo:
-        inputs.append(element)
+    #grab_data()
+    data = load_data()
+    dataset = load_dataset(data)
 
-    nerualNetwork = StockMarketNerualNetwork()
-    prediction = nerualNetwork.predict(inputs)
+    bot = NeuralNetwork(5, 6, 5, 0.01)
+    bot.train(dataset[:-1], dataset[1:], 100)
 
-    print("Predicted %f" % prediction)
-    for i in range(0, 1000):
-        nerualNetwork.train([inputs], [12.75300])
+    bot.forward(dataset[0])
+    print(bot.outputs)
+    print(dataset[1])
 
-    prediction = nerualNetwork.predict(inputs)
-
-    print("Predicted %f" % prediction)
-    
 main()
